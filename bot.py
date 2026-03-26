@@ -4,6 +4,7 @@ import logging
 from dotenv import load_dotenv
 from discord.ext import commands
 from datetime import timedelta
+import asyncio
 
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
@@ -189,4 +190,17 @@ async def timeout(interaction: discord.Interaction, member: discord.Member, minu
             "I don't have permission.", ephemeral=True
         )
 
-bot.run(token, log_handler=handler, log_level=logging.DEBUG)
+# Run bot with improved error handling and reconnect
+if __name__ == "__main__":
+    try:
+        bot.run(token, log_handler=handler, log_level=logging.DEBUG, reconnect=True)
+    except discord.errors.HTTPException as e:
+        if e.status == 429:
+            print("Rate limited (429). Waiting before retry...")
+            logging.error("Discord rate limited, bot will retry after cooldown.")
+        raise
+    except KeyboardInterrupt:
+        print("Bot shutting down...")
+    except Exception as e:
+        print(f"Bot error: {e}")
+        logging.exception("Unexpected error in bot")
