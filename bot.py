@@ -156,3 +156,18 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Bot error: {e}")
         logging.exception("Unexpected error in bot")
+        @bot.tree.command(name="help", description="Show help message")
+
+async def help_command(interaction: discord.Interaction):
+    help_text = """
+    **Available Commands:**
+    - `/ping`: Check bot response.
+    - `/hello`: Say hello.
+    - `/clear <amount>`: Delete messages (requires Manage Messages permission).
+    - `/immune <member>`: Make a user immune (requires Administrator permission).
+    - `/unimmune <member>`: Remove immunity (requires Administrator permission).
+    - `/kick <member> [reason]`: Kick a member (requires Kick Members permission).
+    - `/ban <member> [reason]`: Ban a member (requires Ban Members permission).
+    - `/timeout <member> <minutes>`: Timeout a member (requires Moderate Members permission).
+    """
+    await interaction.response.send_message(help_text, ephemeral=True)                          
